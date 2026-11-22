@@ -30,38 +30,41 @@ export function MockPayPage() {
 
   if (!orderId) {
     return (
-      <div className="container">
+      <div className="page-wrap">
         <p className="error">Не указан order_id</p>
-        <Link to="/support">Вернуться</Link>
+        <Link to="/support" className="back-link">
+          Вернуться
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="container section card mock-pay">
-      <h1>Mock: платёжный шлюз Альфа-Банк</h1>
-      <p className="muted">Заказ {orderId}</p>
-      {statusQ.data && (
-        <p>
-          Сумма: <strong>{statusQ.data.amount_rub} ₽</strong> · статус:{' '}
-          {statusQ.data.status}
-        </p>
-      )}
-      <p>Выберите исход оплаты для проверки сценария:</p>
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-        <button type="button" className="btn" disabled={busy} onClick={() => complete(true)}>
-          Успешная оплата
-        </button>
-        <button
-          type="button"
-          className="btn btn--ghost"
-          disabled={busy}
-          onClick={() => complete(false)}
-        >
-          Ошибка оплаты
-        </button>
-      </div>
-      {error && <p className="error">{error}</p>}
+    <div className="page-wrap">
+      <section className="panel" style={{ maxWidth: 640 }}>
+        <h1>Оплата</h1>
+        <p className="muted">Mock шлюза Альфа-Банк · заказ {orderId}</p>
+        {statusQ.data && (
+          <p>
+            Сумма: <strong>{statusQ.data.amount_rub} ₽</strong> · статус: {statusQ.data.status}
+          </p>
+        )}
+        <p>Выберите исход оплаты, чтобы проверить сценарий.</p>
+        <div className="actions">
+          <button type="button" className="btn" disabled={busy} onClick={() => complete(true)}>
+            Успешная оплата
+          </button>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            disabled={busy}
+            onClick={() => complete(false)}
+          >
+            Ошибка оплаты
+          </button>
+        </div>
+        {error && <p className="error">{error}</p>}
+      </section>
     </div>
   );
 }

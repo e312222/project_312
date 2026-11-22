@@ -12,7 +12,7 @@ export function NewsDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container">
+      <div className="page-wrap">
         <p className="muted">Загрузка...</p>
       </div>
     );
@@ -20,31 +20,26 @@ export function NewsDetailPage() {
 
   if (isError || !data) {
     return (
-      <div className="container">
+      <div className="page-wrap">
         <p className="error">Новость не найдена</p>
-        <Link to="/news">← К списку</Link>
+        <Link to="/news" className="back-link">
+          ← К списку
+        </Link>
       </div>
     );
   }
 
   return (
-    <article className="container section">
-      <p>
-        <Link to="/news">← Новости</Link>
-      </p>
-      <h1>{data.title}</h1>
-      <p className="muted">{data.summary}</p>
-      {data.cover_url && (
-        <img
-          src={data.cover_url}
-          alt=""
-          style={{ width: '100%', maxHeight: 360, objectFit: 'cover', borderRadius: 12 }}
-        />
-      )}
-      <div
-        className="article-body"
-        dangerouslySetInnerHTML={{ __html: data.body_html }}
-      />
+    <article className="page-wrap">
+      <section className="panel">
+        <Link to="/news" className="back-link">
+          ← Новости
+        </Link>
+        <h1>{data.title}</h1>
+        <p className="muted">{data.summary}</p>
+        {data.cover_url && <img className="article-cover" src={data.cover_url} alt="" />}
+        <div className="article-body" dangerouslySetInnerHTML={{ __html: data.body_html }} />
+      </section>
     </article>
   );
 }

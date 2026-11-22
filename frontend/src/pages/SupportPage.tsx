@@ -21,38 +21,41 @@ export function SupportPage() {
   }
 
   return (
-    <div className="container section">
-      <h1>Поддержать дом</h1>
-      <p className="muted">
-        Средства идут на общедомовые инициативы (двор, освещение, мелкий ремонт).
-        Сейчас подключён <strong>mock</strong> платёжного шлюза Альфа-Банка.
-      </p>
-      <form className="form card" onSubmit={onSubmit}>
-        <label>
-          Сумма, ₽
-          <input
-            type="number"
-            min={10}
-            max={500000}
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-            required
-          />
-        </label>
-        <label>
-          Комментарий (необязательно)
-          <textarea
-            rows={3}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            maxLength={500}
-          />
-        </label>
-        {error && <p className="error">{error}</p>}
-        <button type="submit" className="btn" disabled={loading}>
-          {loading ? 'Перенаправление…' : 'Перейти к оплате'}
-        </button>
-      </form>
+    <div className="page-wrap">
+      <section className="panel">
+        <h1>Поддержать дом</h1>
+        <p className="lead">
+          Средства идут на общедомовые инициативы: двор, освещение и мелкий ремонт. Сейчас
+          подключён mock платёжного шлюза Альфа-Банка.
+        </p>
+        <form className="form" onSubmit={onSubmit}>
+          <label>
+            Сумма, ₽
+            <input
+              type="number"
+              min={10}
+              max={500000}
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+              required
+            />
+          </label>
+          <label>
+            Комментарий
+            <textarea
+              rows={3}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              maxLength={500}
+              placeholder="Необязательно"
+            />
+          </label>
+          {error && <p className="error">{error}</p>}
+          <button type="submit" className="btn" disabled={loading}>
+            {loading ? 'Перенаправление…' : 'Перейти к оплате'}
+          </button>
+        </form>
+      </section>
     </div>
   );
 }

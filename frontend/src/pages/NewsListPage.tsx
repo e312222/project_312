@@ -17,28 +17,28 @@ export function NewsListPage() {
   });
 
   return (
-    <div className="container section">
-      <h1>Новости</h1>
-      {isLoading && <p className="muted">Загрузка...</p>}
-      {isError && <p className="error">Не удалось загрузить новости</p>}
-      <div className="news-list">
-        {(data ?? []).map((item) => (
-          <article key={item.slug} className="card news-card">
-            {item.cover_url ? (
-              <img className="news-card__cover" src={item.cover_url} alt="" />
-            ) : (
-              <div className="news-card__cover" />
-            )}
-            <div>
-              <p className="muted">{formatDate(item.published_at)}</p>
-              <h3>
-                <Link to={`/news/${item.slug}`}>{item.title}</Link>
-              </h3>
-              <p>{item.summary}</p>
-            </div>
-          </article>
-        ))}
-      </div>
+    <div className="page-wrap">
+      <section className="panel panel--flat">
+        <h1 className="page-title">Новости</h1>
+        {isLoading && <p className="muted">Загрузка...</p>}
+        {isError && <p className="error">Не удалось загрузить новости</p>}
+        <div className="news-list">
+          {(data ?? []).map((item) => (
+            <Link key={item.slug} to={`/news/${item.slug}`} className="news-row">
+              {item.cover_url ? (
+                <img className="news-row__cover" src={item.cover_url} alt="" />
+              ) : (
+                <div className="news-row__cover" />
+              )}
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.summary}</p>
+              </div>
+              <time dateTime={item.published_at}>{formatDate(item.published_at)}</time>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

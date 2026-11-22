@@ -5,6 +5,14 @@ import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import { api } from '../api/client';
 
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
 export function HomePage() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
@@ -16,63 +24,76 @@ export function HomePage() {
     return <LoadingState>Загрузка...</LoadingState>;
   }
   if (houseQ.isError || !houseQ.data) {
-    return <div className="container error">Не удалось загрузить данные о доме</div>;
+    return <div className="page-wrap error">Не удалось загрузить данные о доме</div>;
   }
 
   const house = houseQ.data;
-  const slides = (galleryQ.data ?? []).map((g) => ({ src: g.url, title: g.caption }));
+  const gallery = galleryQ.data ?? [];
+  const slides = gallery.map((g) => ({ src: g.url, title: g.caption }));
   const latestNews = (newsQ.data ?? []).slice(0, 3);
+  const hero = gallery[0];
 
   return (
-    <div className="container">
+    <>
       <section className="hero">
-        <h1>{house.title}</h1>
-        <p>{house.description}</p>
-        <div className="hero__meta">
-          <span>{house.address}</span>
-          <span>Год постройки: {house.year_built}</span>
-          <Link to="/support" className="btn">
-            Поддержать дом
-          </Link>
+        {hero && <img src={hero.url} alt={hero.caption} />}
+        <div className="hero__shade" />
+        <div className="hero__caption">
+          <span className="hero__eyebrow">{house.address}</span>
+          <h1>{house.title}</h1>
         </div>
       </section>
 
-      <section className="section">
-        <h2>Галерея</h2>
-        {galleryQ.isLoading && <p className="muted">Загрузка фото...</p>}
-        {galleryQ.isError && <p className="error">Не удалось загрузить галерею</p>}
-        <div className="gallery">
-          {(galleryQ.data ?? []).map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              aria-label={item.caption}
-              onClick={() => setLightboxIndex(index)}
-            >
-              <img src={item.url} alt={item.caption} loading="lazy" />
-            </button>
-          ))}
-        </div>
-        <Lightbox
-          open={lightboxIndex >= 0}
-          close={() => setLightboxIndex(-1)}
-          index={lightboxIndex}
-          slides={slides}
-        />
-      </section>
+      <div className="page">
+        <section className="panel" id="about">
+          <h2>О доме</h2>
+          <p className="lead">{house.description}</p>
+          <div className="stats">
+            <div>
+              <strong>{house.year_built}</strong>
+              <span>Год постройки</span>
+            </div>
+            <div>
+              <strong className="stats__name">{house.management_company}</strong>
+              <span>Управляющая компания</span>
+            </div>
+          </div>
+        </section>
 
-      <section className="section grid-2">
-        <div className="card">
+        <section className="panel panel--flat" id="gallery">
+          <h2>Галерея</h2>
+          {galleryQ.isLoading && <p className="muted">Загрузка фото...</p>}
+          {galleryQ.isError && <p className="error">Не удалось загрузить галерею</p>}
+          <div className="gallery">
+            {gallery.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-label={item.caption}
+                onClick={() => setLightboxIndex(index)}
+              >
+                <img src={item.url} alt={item.caption} loading="lazy" />
+                <span className="gallery__caption">{item.caption}</span>
+              </button>
+            ))}
+          </div>
+          <Lightbox
+            open={lightboxIndex >= 0}
+            close={() => setLightboxIndex(-1)}
+            index={lightboxIndex}
+            slides={slides}
+          />
+        </section>
+
+        <section className="panel" id="company">
           <h2>Управляющая компания</h2>
-          <p>
-            <strong>{house.management_company}</strong>
-          </p>
+          <p className="lead">{house.management_company}</p>
           <p className="muted">
-            Тел.: {house.phone}
+            {house.phone}
             <br />
-            Email: {house.email}
+            {house.email}
           </p>
-          <ul>
+          <ul className="links">
             {house.management_links.map((link) => (
               <li key={link.url}>
                 <a href={link.url} target="_blank" rel="noreferrer">
@@ -81,29 +102,50 @@ export function HomePage() {
               </li>
             ))}
           </ul>
-        </div>
-        <div className="card">
-          <h2>Новости дома</h2>
+        </section>
+
+        <section className="panel panel--flat" id="news">
+          <h2>Новости</h2>
           {newsQ.isLoading && <p className="muted">Загрузка новостей...</p>}
           <div className="news-list">
             {latestNews.map((item) => (
-              <article key={item.slug}>
-                <Link to={`/news/${item.slug}`}>
-                  <strong>{item.title}</strong>
-                </Link>
-                <p className="muted">{item.summary}</p>
-              </article>
+              <Link key={item.slug} to={`/news/${item.slug}`} className="news-row">
+                {item.cover_url ? (
+                  <img className="news-row__cover" src={item.cover_url} alt="" />
+                ) : (
+                  <div className="news-row__cover" />
+                )}
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.summary}</p>
+                </div>
+                <time dateTime={item.published_at}>{formatDate(item.published_at)}</time>
+              </Link>
             ))}
           </div>
-          <p style={{ marginTop: '1rem' }}>
-            <Link to="/news">Все новости →</Link>
+          <p className="section-action">
+            <Link to="/news" className="btn btn--ghost">
+              Все новости
+            </Link>
           </p>
-        </div>
-      </section>
-    </div>
+        </section>
+
+        <section className="panel panel--dark" id="support">
+          <h2>Поддержать дом</h2>
+          <p className="lead">
+            Средства идут на общедомовые инициативы: двор, освещение и мелкий ремонт.
+          </p>
+          <p className="section-action">
+            <Link to="/support" className="btn btn--light">
+              Перейти к оплате
+            </Link>
+          </p>
+        </section>
+      </div>
+    </>
   );
 }
 
 function LoadingState({ children }: { children: ReactNode }) {
-  return <div className="container muted">{children}</div>;
+  return <div className="page-wrap muted">{children}</div>;
 }

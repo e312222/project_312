@@ -23,7 +23,7 @@
 | Frontend | React 18, TypeScript, Vite, React Router, TanStack Query | SPA: страницы, формы, запросы к API |
 | Backend | FastAPI, SQLAlchemy, Pydantic | REST API `/api/v1` |
 | БД | PostgreSQL 16 | заказы на пожертвования |
-| Продакшен | Docker Compose + nginx | фронт на `:80`, API проксируется на backend |
+| Продакшен | Docker Compose + nginx | фронт на `127.0.0.1:3180`, API на `127.0.0.1:8310`; снаружи — nginx хоста |
 
 В Docker nginx отдаёт собранный фронт и проксирует `/api/` на FastAPI. В разработке Vite крутится на `:5173` и сам проксирует `/api` на `http://127.0.0.1:8000`.
 
@@ -55,20 +55,20 @@
 
 ## Запуск
 
-Нужны Docker (и Docker Compose) для БД и API. Для локальной разработки фронта — Node.js 22+.
+Нужны Docker Engine 20.10+ и docker-compose 1.25+ (команда `docker-compose`, формат файла 2.4). Для локальной разработки фронта — Node.js 22+.
 
 ### Продакшен-сборка (всё в Docker)
 
-Сайт на [http://localhost](http://localhost), API на [http://localhost:8000](http://localhost:8000).
+Контейнеры слушают только localhost: сайт на [http://127.0.0.1:3180](http://127.0.0.1:3180), API на [http://127.0.0.1:8310](http://127.0.0.1:8310). Публичный вход — nginx хоста, конфиг `nginx/host.conf`: `/` уходит на фронт, `/api/` на backend.
 
 ```bash
-docker compose up --build
+docker-compose up --build
 ```
 
 Остановить:
 
 ```bash
-docker compose down
+docker-compose down
 ```
 
 ### Локальная разработка
@@ -76,10 +76,10 @@ docker compose down
 1. Поднять Postgres и backend (фронт запускается отдельно):
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
-Так БД слушает `:5432`, API — `:8000`, CORS и mock-URL настроены на Vite (`http://localhost:5173`).
+Так БД слушает `:5432`, API для Vite — `:8000` (дополнительно к серверному `:8310`), CORS и mock-URL настроены на Vite (`http://localhost:5173`).
 
 2. В другом терминале — фронт:
 
