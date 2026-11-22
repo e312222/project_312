@@ -20,7 +20,7 @@ services:
       context: ./backend
     environment:
       DATABASE_URL: postgresql+psycopg://tsg:tsg@db:5432/tsg
-      MOCK_PAYMENT_BASE_URL: http://localhost/support/mock-pay
+      MOCK_PAYMENT_BASE_URL: http://localhost/tsg/support/mock-pay
       CORS_ORIGINS: http://localhost,http://127.0.0.1
     depends_on:
       db:
@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       args:
-        VITE_API_URL: /api/v1
+        VITE_API_URL: /tsg/api/v1
     ports:
       - "127.0.0.1:3180:80"
     depends_on:

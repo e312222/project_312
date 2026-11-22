@@ -26,8 +26,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(public_router, prefix="/api/v1")
-app.include_router(payments_router, prefix="/api/v1")
+app.include_router(public_router, prefix="/tsg/api/v1")
+app.include_router(payments_router, prefix="/tsg/api/v1")
 
 
 @app.get("/health")

@@ -10,5 +10,5 @@ services:
     ports:
       - "8000:8000"
     environment:
-      MOCK_PAYMENT_BASE_URL: http://localhost:5173/support/mock-pay
+      MOCK_PAYMENT_BASE_URL: http://localhost:5173/tsg/support/mock-pay
       CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173

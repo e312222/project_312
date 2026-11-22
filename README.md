@@ -21,11 +21,11 @@
 | Часть | Стек | Роль |
 | --- | --- | --- |
 | Frontend | React 18, TypeScript, Vite, React Router, TanStack Query | SPA: страницы, формы, запросы к API |
-| Backend | FastAPI, SQLAlchemy, Pydantic | REST API `/api/v1` |
+| Backend | FastAPI, SQLAlchemy, Pydantic | REST API `/tsg/api/v1` |
 | БД | PostgreSQL 16 | заказы на пожертвования |
 | Продакшен | Docker Compose + nginx | фронт на `127.0.0.1:3180`, API на `127.0.0.1:8310`; снаружи — nginx хоста |
 
-В Docker nginx отдаёт собранный фронт и проксирует `/api/` на FastAPI. В разработке Vite крутится на `:5173` и сам проксирует `/api` на `http://127.0.0.1:8000`.
+В Docker nginx отдаёт собранный фронт по `/tsg/` и проксирует `/tsg/api/` на FastAPI. В разработке Vite крутится на `:5173` (сайт — `/tsg/`) и сам проксирует `/tsg/api` на `http://127.0.0.1:8000`.
 
 ### Backend
 
@@ -59,7 +59,7 @@
 
 ### Продакшен-сборка (всё в Docker)
 
-Контейнеры слушают только localhost: сайт на [http://127.0.0.1:3180](http://127.0.0.1:3180), API на [http://127.0.0.1:8310](http://127.0.0.1:8310). Публичный вход — nginx хоста, конфиг `nginx/host.conf`: `/` уходит на фронт, `/api/` на backend.
+Контейнеры слушают только localhost: сайт на [http://127.0.0.1:3180/tsg/](http://127.0.0.1:3180/tsg/), API на [http://127.0.0.1:8310/tsg/api/v1](http://127.0.0.1:8310/tsg/api/v1). Публичный вход — nginx хоста, конфиг `nginx/host.conf`: `/tsg/` уходит на фронт, `/tsg/api/` на backend.
 
 ```bash
 docker-compose up --build
@@ -90,7 +90,7 @@ npm install
 npm run dev
 ```
 
-Откройте [http://localhost:5173](http://localhost:5173). Запросы к `/api` проксируются на backend.
+Откройте [http://localhost:5173/tsg/](http://localhost:5173/tsg/). Запросы к `/tsg/api` проксируются на backend.
 
 Backend без Docker (опционально), если Postgres уже запущен:
 
