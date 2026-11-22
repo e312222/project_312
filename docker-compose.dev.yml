@@ -1,0 +1,10 @@
+# Локальная разработка: только БД и API (фронт — npm run dev)
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  backend:
+    environment:
+      MOCK_PAYMENT_BASE_URL: http://localhost:5173/support/mock-pay
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
