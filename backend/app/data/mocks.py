@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from app.schemas import GalleryItem, HouseInfo, ManagementCompanyLink, NewsArticle, NewsPreview
 
 HOUSE = HouseInfo(
-    title='ТСЖ «Дом на Набережной»',
+    title='Доходный дом Первого Российского Страхового Общества 1913-1914',
     address='г. Москва, ул. Набережная, д. 12',
     description=(
         'Жилой дом 2018 года постройки: 9 этажей, подземный паркинг, '

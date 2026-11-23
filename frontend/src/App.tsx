@@ -8,6 +8,7 @@ import { NewsDetailPage } from './pages/NewsDetailPage';
 import { SupportPage } from './pages/SupportPage';
 import { MockPayPage } from './pages/MockPayPage';
 import { SupportResultPage } from './pages/SupportResultPage';
+import { SITE_NAME } from './site';
 
 const sections = [
   { hash: '#about', label: 'О доме' },
@@ -16,6 +17,16 @@ const sections = [
   { hash: '#news', label: 'Новости' },
   { hash: '#support', label: 'Поддержать' },
 ];
+
+function SiteLogo() {
+  return (
+    <>
+      <span className="logo__mark">Доходный дом</span>
+      <span className="logo__name">Первого Российского Страхового Общества</span>
+      <span className="logo__desc">1913-1914</span>
+    </>
+  );
+}
 
 function scrollToSection(hash: string) {
   const id = decodeURIComponent(hash.replace(/^#/, ''));
@@ -38,6 +49,10 @@ export default function App() {
     if (!location.hash) return hash === '#about';
     return location.hash === hash;
   }
+
+  useEffect(() => {
+    document.title = SITE_NAME;
+  }, []);
 
   useEffect(() => {
     if (location.pathname !== '/' || !location.hash) {
@@ -63,9 +78,7 @@ export default function App() {
       <header className="header">
         <div className="header__top">
           <Link to="/" className="logo" onClick={() => setMenuOpen(false)}>
-            <span className="logo__mark">ТСЖ</span>
-            <span className="logo__name">Набережная</span>
-            <span className="logo__desc">дом жителей</span>
+            <SiteLogo />
           </Link>
           <nav className="header__links">
             <NavLink to="/news" className={({ isActive }) => (isActive ? 'is-active' : undefined)}>
@@ -138,9 +151,7 @@ export default function App() {
         <div className="footer__inner">
           <div>
             <Link to="/" className="logo">
-              <span className="logo__mark">ТСЖ</span>
-              <span className="logo__name">Набережная</span>
-              <span className="logo__desc">дом жителей</span>
+              <SiteLogo />
             </Link>
             {houseQ.data && <p style={{ marginTop: 16 }}>{houseQ.data.address}</p>}
           </div>
@@ -158,7 +169,9 @@ export default function App() {
             <p className="muted">Платежи: mock Альфа-Банк</p>
           </div>
         </div>
-        <div className="footer__bottom">© {new Date().getFullYear()} ТСЖ «Дом на Набережной»</div>
+        <div className="footer__bottom">
+          © {new Date().getFullYear()} {SITE_NAME}
+        </div>
       </footer>
     </div>
   );

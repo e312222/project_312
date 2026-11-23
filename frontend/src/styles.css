@@ -83,6 +83,16 @@ textarea {
   letter-spacing: -0.02em;
 }
 
+.header__top .logo__mark {
+  font-size: 16px;
+}
+
+.header__top .logo__name {
+  max-width: 220px;
+  font-size: 14px;
+  line-height: 1.15;
+}
+
 .logo__desc {
   margin-top: 2px;
   color: var(--text);
