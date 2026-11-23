@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { api } from './api/client';
@@ -10,12 +10,21 @@ import { MockPayPage } from './pages/MockPayPage';
 import { SupportResultPage } from './pages/SupportResultPage';
 
 const sections = [
-  { href: '/#about', hash: '#about', label: 'О доме' },
-  { href: '/#gallery', hash: '#gallery', label: 'Галерея' },
-  { href: '/#company', hash: '#company', label: 'Управляющая' },
-  { href: '/#news', hash: '#news', label: 'Новости' },
-  { href: '/#support', hash: '#support', label: 'Поддержать' },
+  { hash: '#about', label: 'О доме' },
+  { hash: '#gallery', label: 'Галерея' },
+  { hash: '#company', label: 'Управляющая' },
+  { hash: '#news', label: 'Новости' },
+  { hash: '#support', label: 'Поддержать' },
 ];
+
+function scrollToSection(hash: string) {
+  const id = decodeURIComponent(hash.replace(/^#/, ''));
+  if (!id) return false;
+  const target = document.getElementById(id);
+  if (!target) return false;
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  return true;
+}
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,6 +38,25 @@ export default function App() {
     if (!location.hash) return hash === '#about';
     return location.hash === hash;
   }
+
+  useEffect(() => {
+    if (location.pathname !== '/' || !location.hash) {
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (scrollToSection(location.hash)) return;
+
+    let attempts = 0;
+    const timer = window.setInterval(() => {
+      attempts += 1;
+      if (scrollToSection(location.hash) || attempts > 40) {
+        window.clearInterval(timer);
+      }
+    }, 50);
+
+    return () => window.clearInterval(timer);
+  }, [location.pathname, location.hash]);
 
   return (
     <div className="app">
@@ -46,7 +74,7 @@ export default function App() {
             <NavLink to="/support" className={({ isActive }) => (isActive ? 'is-active' : undefined)}>
               Поддержать дом
             </NavLink>
-            <Link to="/#company">Контакты</Link>
+            <Link to={{ pathname: '/', hash: '#company' }}>Контакты</Link>
           </nav>
           <div className="header__tools">
             <a className="header__phone" href={phoneHref}>
@@ -69,8 +97,13 @@ export default function App() {
           {sections.map((item) => (
             <Link
               key={item.hash}
-              to={item.href}
+              to={{ pathname: '/', hash: item.hash }}
               className={sectionActive(item.hash) ? 'is-active' : undefined}
+              onClick={() => {
+                if (location.pathname === '/' && location.hash === item.hash) {
+                  scrollToSection(item.hash);
+                }
+              }}
             >
               {item.label}
             </Link>
@@ -84,7 +117,7 @@ export default function App() {
             <Link to="/support" onClick={() => setMenuOpen(false)}>
               Поддержать дом
             </Link>
-            <Link to="/#company" onClick={() => setMenuOpen(false)}>
+            <Link to={{ pathname: '/', hash: '#company' }} onClick={() => setMenuOpen(false)}>
               Контакты
             </Link>
           </nav>
@@ -113,8 +146,8 @@ export default function App() {
           </div>
           <div>
             <h3>Разделы</h3>
-            <Link to="/#about">О доме</Link>
-            <Link to="/#gallery">Галерея</Link>
+            <Link to={{ pathname: '/', hash: '#about' }}>О доме</Link>
+            <Link to={{ pathname: '/', hash: '#gallery' }}>Галерея</Link>
             <Link to="/news">Новости</Link>
             <Link to="/support">Поддержать дом</Link>
           </div>
